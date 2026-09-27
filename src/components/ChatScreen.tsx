@@ -80,7 +80,7 @@ export function ChatScreen({ creds, onLogout }: Props) {
             type="tel"
             value={phoneInput}
             onChange={(e) => setPhoneInput(e.target.value)}
-            placeholder="+996 700 123456"
+            placeholder="+1 234 567 8900"
             autoFocus
           />
           <button type="submit">Начать чат</button>
