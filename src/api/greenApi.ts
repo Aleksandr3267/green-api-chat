@@ -8,7 +8,11 @@ export function phoneToChatId(phone: string): string {
   const digitsOnly = phone.replace(/\D/g, "");
   return `${digitsOnly}@c.us`;
 }
-
+export function isValidPhone(phone: string): boolean {
+  if (!/^[+\d\s()-]+$/.test(phone)) return false;
+  const digits = phone.replace(/\D/g, "");
+  return digits.length >= 10 && digits.length <= 15;
+}
 
 export async function sendMessage(
   creds: GreenApiCredentials,

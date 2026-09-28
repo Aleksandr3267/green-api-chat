@@ -153,3 +153,12 @@
   opacity: 0.5;
   cursor: default;
 }
+
+
+
+
+.recipient-card .recipient-error {
+  color: var(--color-danger);
+  font-size: 13px;
+  margin: 0;
+}

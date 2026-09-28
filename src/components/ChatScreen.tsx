@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, type FormEvent } from "react";
 import type { ChatMessage, GreenApiCredentials } from "../types";
-import { phoneToChatId, sendMessage } from "../api/greenApi";
+import { phoneToChatId, sendMessage, isValidPhone  } from "../api/greenApi";
 import { useMessagePolling } from "../hooks/useMessagePolling";
 import "./ChatScreen.css";
 
@@ -16,6 +16,8 @@ export function ChatScreen({ creds, onLogout }: Props) {
   const [draft, setDraft] = useState("");
   const [isSending, setIsSending] = useState(false);
   const listEndRef = useRef<HTMLDivElement>(null);
+
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   
   useMessagePolling(creds, chatId, (text) => {
@@ -37,7 +39,13 @@ export function ChatScreen({ creds, onLogout }: Props) {
 
   function handleStartChat(event: FormEvent) {
     event.preventDefault();
-    if (!phoneInput.trim()) return;
+  
+    if (!isValidPhone(phoneInput)) {
+      setPhoneError("Введите номер полностью, с кодом страны (10–15 цифр)");
+      return;
+    }
+  
+    setPhoneError(null);
     setChatId(phoneToChatId(phoneInput));
     setMessages([]);
   }
@@ -77,12 +85,16 @@ export function ChatScreen({ creds, onLogout }: Props) {
           <h2>Новый чат</h2>
           <p>Введите номер телефона получателя в WhatsApp</p>
           <input
-            type="tel"
-            value={phoneInput}
-            onChange={(e) => setPhoneInput(e.target.value)}
-            placeholder="+1 234 567 8900"
-            autoFocus
-          />
+  type="tel"
+  value={phoneInput}
+  onChange={(e) => {
+    setPhoneInput(e.target.value);
+    setPhoneError(null); 
+  }}
+  placeholder="Номер с кодом страны"
+  autoFocus
+/>
+{phoneError && <p className="recipient-error">{phoneError}</p>}
           <button type="submit">Начать чат</button>
           <button type="button" className="link-button" onClick={onLogout}>
             Выйти из аккаунта
